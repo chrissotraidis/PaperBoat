@@ -222,6 +222,12 @@ void PaperboatMenu::AddMenuSettings() {
                 "desktop the mouse can drive it for testing."
             )
         );
+#if defined(PLATFORM_IOS) || defined(__IOS__)
+    AddWidget(path, "Auto-hide Touch Controls with Controller", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_TOUCH("AutoHideWithController"))
+        .RaceDisable(false)
+        .Options(CheckboxOptions().Tooltip("Hide the on-screen controls while a physical controller is connected."));
+#endif
     AddWidget(path, "Touch Controls Scale", WIDGET_CVAR_SLIDER_FLOAT)
         .CVar(CVAR_TOUCH("Scale"))
         .RaceDisable(false)

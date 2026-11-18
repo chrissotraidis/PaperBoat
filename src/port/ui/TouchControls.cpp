@@ -149,6 +149,7 @@ void RegisterCVars() {
     }
     registered = true;
     CVarRegisterInteger(CVAR_TOUCH("Enabled"), TOUCH_CONTROLS_DEFAULT);
+    CVarRegisterInteger(CVAR_TOUCH("AutoHideWithController"), 1);
     CVarRegisterFloat(CVAR_TOUCH("Scale"), 1.0f);
     CVarRegisterFloat(CVAR_TOUCH("Opacity"), 0.8f);
     // Edit mode never persists across runs.
@@ -157,6 +158,16 @@ void RegisterCVars() {
 
 bool Enabled() {
     RegisterCVars();
+#if defined(PLATFORM_IOS) || defined(__IOS__)
+    if (!sState.editMode && CVarGetInteger(CVAR_TOUCH("AutoHideWithController"), 1)) {
+        const int joysticks = SDL_NumJoysticks();
+        for (int i = 0; i < joysticks; ++i) {
+            if (SDL_IsGameController(i)) {
+                return false;
+            }
+        }
+    }
+#endif
     return CVarGetInteger(CVAR_TOUCH("Enabled"), TOUCH_CONTROLS_DEFAULT) != 0;
 }
 
